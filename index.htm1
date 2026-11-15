@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>蟹老板卡商</title>
+
+<style>
+
+*{box-sizing:border-box}
+
+body{
+
+  margin:0;
+
+  font-family:Arial,"Microsoft YaHei",sans-serif;
+
+  background:#090909;
+
+  color:#f5d98b;
+
+}
+
+header{
+
+  text-align:center;
+
+  padding:30px 15px;
+
+  background:linear-gradient(135deg,#17120a,#30200b);
+
+  border-bottom:1px solid #806020;
+
+}
+
+.logo{
+
+  width:85px;height:85px;border-radius:50%;
+
+  object-fit:cover;border:2px solid #d6ad51;
+
+}
+
+h1{margin:12px 0 5px;font-size:27px}
+
+header p{color:#b9a477}
+
+.container{max-width:900px;margin:30px auto;padding:15px}
+
+.section-title{text-align:center;margin:30px 0 20px}
+
+.products{
+
+  display:grid;
+
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+  gap:18px;
+
+}
+
+.card{
+
+  background:linear-gradient(145deg,#211a0d,#111);
+
+  border:1px solid #8d6a29;
+
+  border-radius:14px;
+
+  padding:25px 15px;
+
+  text-align:center;
+
+}
+
+.card h2{color:#f5d98b}
+
+.price{font-size:32px;color:#e9bd58;margin:20px 0}
+
+button{
+
+  border:0;border-radius:8px;padding:12px 20px;
+
+  cursor:pointer;font-size:15px;font-weight:bold;
+
+}
+
+.buy{
+
+  width:100%;background:linear-gradient(90deg,#d4a43e,#f4d77e);
+
+  color:#211600;
+
+}
+
+.pay-buttons{
+
+  display:flex;gap:12px;margin-top:20px;
+
+}
+
+.pay-buttons button{flex:1;color:white}
+
+.alipay{background:#1677ff}
+
+.wechat{background:#07a653}
+
+.panel{
+
+  background:#17130b;border:1px solid #705522;
+
+  border-radius:12px;padding:20px;margin-top:25px;
+
+}
+
+input{
+
+  width:100%;padding:13px;margin:8px 0;
+
+  background:#0c0c0c;color:white;
+
+  border:1px solid #665027;border-radius:7px;
+
+}
+
+.modal{
+
+  display:none;position:fixed;inset:0;
+
+  background:#000c;align-items:center;justify-content:center;
+
+  padding:15px;z-index:10;
+
+}
+
+.modal-box{
+
+  width:100%;max-width:360px;background:#17130b;
+
+  border:1px solid #b18a39;border-radius:14px;
+
+  padding:22px;text-align:center;
+
+}
+
+.qr{
+
+  width:220px;height:220px;object-fit:contain;
+
+  background:white;padding:8px;margin:15px auto;
+
+}
+
+.close{background:#555;color:white;margin-top:12px}
+
+.submit{background:#d8ad51;color:#201500;width:100%;margin-top:12px}
+
+table{width:100%;border-collapse:collapse;color:#eee;font-size:13px}
+
+th,td{padding:10px;border-bottom:1px solid #514020;text-align:left}
+
+.admin-area{overflow-x:auto}
+
+.hidden{display:none}
+
+footer{text-align:center;color:#766b52;padding:30px}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+  <!-- 将你的蟹老板头像文件命名为 logo.png，放在本网页旁边 -->
+
+  <img class="logo" src="logo.png" alt="蟹老板头像">
+
+  <h1>蟹老板卡商</h1>
+
+  <p>品质服务 · 安全交易</p>
+
+</header>
+
+<div class="container">
+
+  <h2 class="section-title">会员套餐</h2>
+
+  <div class="products">
+
+    <div class="card">
+
+      <h2>月卡</h2>
+
+      <div class="price">¥60</div>
+
+      <button class="buy" onclick="selectProduct('月卡',60)">立即购买</button>
+
+    </div>
+
+    <div class="card">
+
+      <h2>季卡</h2>
+
+      <div class="price">¥140</div>
+
+      <button class="buy" onclick="selectProduct('季卡',140)">立即购买</button>
+
+    </div>
+
+    <div class="card">
+
+      <h2>年卡</h2>
+
+      <div class="price">¥280</div>
+
+      <button class="buy" onclick="selectProduct('年卡',280)">立即购买</button>
+
+    </div>
+
+  </div>
+
+  <div class="panel">
+
+    <h2>提交订单</h2>
+
+    <p id="selected">请先选择商品</p>
+
+    <input id="buyer" placeholder="请输入联系方式">
+
+    <div class="pay-buttons">
+
+      <button class="alipay" onclick="showPay('alipay')">支付宝付款</button>
+
+      <button class="wechat" onclick="showPay('wechat')">微信付款</button>
+
+    </div>
+
+    <button class="submit" onclick="createOrder()">提交订单</button>
+
+  </div>
+
+  <div class="panel">
+
+    <h2>订单查询</h2>
+
+    <input id="searchOrder" placeholder="请输入订单编号">
+
+    <button class="submit" onclick="searchMyOrder()">查询订单</button>
+
+    <p id="orderResult"></p>
+
+  </div>
+
+  <div class="panel">
+
+    <h2>后台管理</h2>
+
+    <input id="adminPassword" type="password" placeholder="管理员密码">
+
+    <button class="submit" onclick="adminLogin()">管理员登录</button>
+
+    <div id="adminArea" class="hidden">
+
+      <h3>订单列表</h3>
+
+      <div class="admin-area">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>订单编号</th>
+
+              <th>商品</th>
+
+              <th>金额</th>
+
+              <th>联系方式</th>
+
+              <th>状态</th>
+
+              <th>操作</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody id="orderList"></tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<footer>蟹老板卡商 © 2026</footer>
+
+<!-- 支付二维码弹窗 -->
+
+<div class="modal" id="payModal">
+
+  <div class="modal-box">
+
+    <h2 id="payTitle">扫码付款</h2>
+
+    <!-- 替换成你自己的原始二维码图片 -->
+
+    <img id="payQR" class="qr" src="" alt="付款二维码">
+
+    <p>请确认金额后完成付款</p>
+
+    <button class="close" onclick="closePay()">关闭</button>
+
+  </div>
+
+</div>
+
+<script>
+
+let currentProduct = null;
+
+let currentPrice = 0;
+
+let currentPay = "";
+
+function selectProduct(name,price){
+
+  currentProduct = name;
+
+  currentPrice = price;
+
+  document.getElementById("selected").innerText =
+
+    `已选择：${name}，金额：¥${price}`;
+
+}
+
+function showPay(type){
+
+  if(!currentProduct){
+
+    alert("请先选择商品");
+
+    return;
+
+  }
+
+  currentPay = type;
+
+  const title = document.getElementById("payTitle");
+
+  const qr = document.getElementById("payQR");
+
+  if(type === "alipay"){
+
+    title.innerText = "支付宝付款";
+
+    qr.src = "alipay.png";
+
+  }else{
+
+    title.innerText = "微信付款";
+
+    qr.src = "wechat.png";
+
+  }
+
+  document.getElementById("payModal").style.display="flex";
+
+}
+
+function closePay(){
+
+  document.getElementById("payModal").style.display="none";
+
+}
+
+function createOrder(){
+
+  if(!currentProduct){
+
+    alert("请先选择商品");
+
+    return;
+
+  }
+
+  const buyer = document.getElementById("buyer").value.trim();
+
+  if(!buyer){
+
+    alert("请填写联系方式");
+
+    return;
+
+  }
+
+  if(!currentPay){
+
+    alert("请先选择支付宝或微信");
+
+    return;
+
+  }
+
+  const order = {
+
+    id:"XL"+Date.now(),
+
+    product:currentProduct,
+
+    price:currentPrice,
+
+    buyer:buyer,
+
+    payment:currentPay,
+
+    status:"待核账",
+
+    time:new Date().toLocaleString()
+
+  };
+
+  const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+
+  orders.unshift(order);
+
+  localStorage.setItem("orders",JSON.stringify(orders));
+
+  alert("订单提交成功！订单编号："+order.id);
+
+  document.getElementById("searchOrder").value=order.id;
+
+  document.getElementById("orderResult").innerText=
+
+    "订单状态：待核账";
+
+  closePay();
+
+}
+
+function searchMyOrder(){
+
+  const id = document.getElementById("searchOrder").value.trim();
+
+  const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+
+  const order = orders.find(o=>o.id===id);
+
+  document.getElementById("orderResult").innerText = order
+
+    ? `商品：${order.product}｜金额：¥${order.price}｜状态：${order.status}`
+
+    : "没有找到该订单";
+
+}
+
+function adminLogin(){
+
+  // 演示密码，正式上线必须改为服务器端验证
+
+  if(document.getElementById("adminPassword").value !== "888888"){
+
+    alert("密码错误");
+
+    return;
+
+  }
+
+  document.getElementById("adminArea").classList.remove("hidden");
+
+  renderOrders();
+
+}
+
+function renderOrders(){
+
+  const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+
+  const list = document.getElementById("orderList");
+
+  list.innerHTML = orders.map((o,i)=>`
+
+    <tr>
+
+      <td>${o.id}</td>
+
+      <td>${o.product}</td>
+
+      <td>¥${o.price}</td>
+
+      <td>${escapeHTML(o.buyer)}</td>
+
+      <td>
+
+        <select onchange="changeStatus(${i},this.value)">
+
+          ${["待核账","已确认","已完成","已取消"].map(s=>
+
+            `<option ${o.status===s?"selected":""}>${s}</option>`
+
+          ).join("")}
+
+        </select>
+
+      </td>
+
+      <td><button onclick="deleteOrder(${i})">删除</button></td>
+
+    </tr>
+
+  `).join("");
+
+}
+
+function changeStatus(index,status){
+
+  const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+
+  orders[index].status=status;
+
+  localStorage.setItem("orders",JSON.stringify(orders));
+
+  renderOrders();
+
+}
+
+function deleteOrder(index){
+
+  if(!confirm("确定删除这笔订单？")) return;
+
+  const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+
+  orders.splice(index,1);
+
+  localStorage.setItem("orders",JSON.stringify(orders));
+
+  renderOrders();
+
+}
+
+function escapeHTML(value){
+
+  return String(value).replace(/[&<>"']/g,c=>({
+
+    "&":"&amp;","<":"&lt;",">":"&gt;",
+
+    '"':"&quot;","'":"&#39;"
+
+  }[c]));
+
+}
+
+</script>
+
+</body>
+
+</html>
